@@ -1,0 +1,9 @@
+NAGKey,Value,Policy,ProfileDes,OwnerProducer,sci,accessList
+NAG1,ABC,system,guide://999990/exampleProfileDES2,GBR,sci1,johndoe@aml.mil
+NAG2,XYZ,system,guide://999990/exampleProfileDES,USA,sci1,"johndoe@asd.net,JaneDoe2@asd.net"
+NAG3,Farmers,system,guide://999990/exampleProfileDES3,USA,SCI2,"freddyfarmer@moo.org,millieMilkmaid@moo.org"
+NAG4,Zookeepers,system ,guide://999990/exampleProfileDES3,USA,SCI3,"DocDoolittle@zoo.com,bobkeeper@zoo.com,millieMilkmail@moo.org,johndoe@xml.mil"
+NAG5,BeanCounters,System,guide://999990/exampleProfileDES3,USA,SCi1,"SallyCPA@dia.gov,HarveyCFO@dia.gov,freddyFarmer@moo.org"
+NAG6,SNOW,system,guide://999990/exampleProfileDESC,AUS,SCI4,"bjones@zt.lab.local,jvirtru@zt.lab.local,jdoe@zt.lab.local"
+NAG7,Outback,System,guide://999990/exampleProfileDESNZ,NZL,SCI5,"jmay@zt.lab.local,lmiles@zt.lab.local"
+NAG8,SNOW,system,guide://999990/exampleProfileDESC,AUS,SCI1,"bjones@zt.lab.local,jvirtru@zt.lab.local,jdoe@zt.lab.local"
