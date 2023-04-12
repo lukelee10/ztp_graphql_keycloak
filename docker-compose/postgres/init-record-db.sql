@@ -1,3 +1,41 @@
+CREATE TABLE document (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255),
+  classification VARCHAR(255),
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE portion (
+  id SERIAL PRIMARY KEY,
+  document_id INTEGER REFERENCES document(id),
+  text TEXT,
+  classification VARCHAR(255),
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO document (title, classification) VALUES ('Operation Plan: Alpha', 'TOPSECRET');
+INSERT INTO portion (document_id, text, classification) VALUES (1, 'Mission Objective', 'TOPSECRET');
+INSERT INTO portion (document_id, text, classification) VALUES (1, 'Enemy Threat Analysis', 'TOPSECRET');
+INSERT INTO portion (document_id, text, classification) VALUES (1, 'Logistics and Resource Allocation', 'SECRET');
+INSERT INTO portion (document_id, text, classification) VALUES (1, 'Communication Protocols', 'SECRET');
+
+INSERT INTO document (title, classification) VALUES ('Top Secret Briefing', 'TOPSECRET');
+INSERT INTO portion (document_id, text, classification) VALUES (2, 'Security Threat Assessment', 'TOPSECRET');
+INSERT INTO portion (document_id, text, classification) VALUES (2, 'National Security Implications', 'TOPSECRET');
+INSERT INTO portion (document_id, text, classification) VALUES (2, 'Operational Plan Overview', 'TOPSECRET');
+
+INSERT INTO document (title, classification) VALUES ('Naval Intelligence Report', 'SECRET');
+INSERT INTO portion (document_id, text, classification) VALUES (3, 'Vessel Tracking and Identification', 'SECRET');
+INSERT INTO portion (document_id, text, classification) VALUES (3, 'Current Naval Deployment Overview', 'SECRET');
+INSERT INTO portion (document_id, text, classification) VALUES (3, 'Analysis of Enemy Naval Capabilities', 'TOPSECRET');
+
+INSERT INTO document (title, classification) VALUES ('La La Land Movie Review', 'UNCLASSIFIED');
+INSERT INTO portion (document_id, text, classification) VALUES (4, 'La La Land is a romantic musical comedy-drama film directed by Damien Chazelle and starring Emma Stone and Ryan Gosling.', 'UNCLASSIFIED');
+INSERT INTO portion (document_id, text, classification) VALUES (4, 'The movie tells the story of Mia, an aspiring actress, and Sebastian, a jazz pianist, who fall in love while pursuing their dreams in Los Angeles.', 'UNCLASSIFIED');
+INSERT INTO portion (document_id, text, classification) VALUES (4, 'The movie features beautiful cinematography, catchy songs, and impressive dance numbers that pay tribute to classic Hollywood musicals.', 'UNCLASSIFIED');
+INSERT INTO portion (document_id, text, classification) VALUES (4, 'Emma Stone and Ryan Gosling deliver strong performances, and their chemistry on-screen is undeniable.', 'UNCLASSIFIED');
+INSERT INTO portion (document_id, text, classification) VALUES (4, 'La La Land is a charming and entertaining movie that is sure to leave you with a smile on your face.', 'UNCLASSIFIED');
+
 CREATE TABLE records (
   id SERIAL PRIMARY KEY,
   data TEXT,

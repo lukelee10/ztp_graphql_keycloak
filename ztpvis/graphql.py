@@ -8,6 +8,15 @@ from strawberry.types import Info
 from ztpvis.database import pool
 
 
+# Maps user's roles to a clearance
+ROLE_TO_CLEARANCE_MAP = {
+    "clearance_top_secret": "TOPSECRET",
+    "clearance_confidential": "CONFIDENTIAL",
+    "clearance_secret": "SECRET",
+    "clearance_unclassified": "UNCLASSIFIED",
+}
+
+
 @strawberry.type
 class Record:
     """Record type for GraphQL"""
@@ -28,31 +37,99 @@ class User:
     active: bool
     roles: List[str]
 
+    def roles_to_classifications(self) -> List[str]:
+        """Function to convert roles to classifications"""
+        return [ROLE_TO_CLEARANCE_MAP[role] for role in self.roles]
 
-# define GraphQL resolvers
+
+@strawberry.type
+class Portion:
+    id: int
+    document_id: int
+    text: str
+    classification: str
+    created_at: str
+
+
+@strawberry.type
+class Document:
+    id: int
+    title: str
+    classification: str
+    created_at: str
+    # portions: List[Portion]
+
+    # Define a resolver for the portions field
+    @strawberry.field
+    def portions(self, info: Info) -> List[Portion]:
+        user: User = info.context.get("user")
+        if user is None:
+            # If no user is logged in, return an empty list
+            return []
+
+        user_classifications = user.roles_to_classifications()
+
+        with pool.getconn() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    "SELECT id, document_id, text, classification, created_at FROM portion WHERE document_id = %s",
+                    (self.id,),
+                )
+                result = cursor.fetchall()
+                portions = [
+                    Portion(
+                        id=row[0],
+                        document_id=row[1],
+                        text=row[2],
+                        classification=row[3],
+                        created_at=row[4],
+                    )
+                    for row in result
+                    if row[3] in user_classifications  # or row[3] == "UNCLASSIFIED"
+                ]
+                cursor.close()
+            pool.putconn(conn)
+        return portions
+
+
 @strawberry.type
 class Query:
+    @strawberry.field
+    def documents(self, info: Info) -> List[Document]:
+        with pool.getconn() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    "SELECT id, title, classification, created_at FROM document"
+                )
+                result = cursor.fetchall()
+                documents = [
+                    Document(
+                        id=row[0],
+                        title=row[1],
+                        classification=row[2],
+                        created_at=row[3],
+                    )
+                    for row in result
+                ]
+                cursor.close()
+            pool.putconn(conn)
+        return documents
+
     @strawberry.field
     def records(self, info: Info) -> List[Record]:
         user = info.context.get("user")
 
-        # Maps user's roles to a record's clearance
-        clearance_mapping = {
-            "clearance_top_secret": "TOPSECRET",
-            "clearance_confidential": "CONFIDENTIAL",
-            "clearance_secret": "SECRET",
-            "clearance_unclassified": "UNCLASSIFIED",
-        }
-
         if user is not None and user.roles:
-            user_clearances = [clearance_mapping.get(role) for role in user.roles]
+            user_classifications = user.roles_to_classifications()
             with pool.getconn() as conn:
                 with conn.cursor() as cursor:
                     cursor.execute(
                         "SELECT * FROM records WHERE clearance IN %s",
-                        (tuple(user_clearances),),
+                        (tuple(user_classifications),),
                     )
                     rows = cursor.fetchall()
+                    cursor.close()
+                pool.putconn(conn)
         else:
             # Deny everything, return nothing (perhaps this should be an error instead?)
             return []

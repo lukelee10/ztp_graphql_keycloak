@@ -1,3 +1,14 @@
+# Quickstart
+
+Refer to the `Setup > settings.yaml` section of this README then run the following:
+
+```
+make setup
+make
+```
+
+Naviate to http://localhost:8000/
+
 # Setup
 Start the containers.
 
@@ -12,6 +23,7 @@ pip install pipenv
 PIPENV_VENV_IN_PROJECT=1 pipenv install --dev --python $(which python)
 ```
 
+## settings.yaml
 Create a `settings.yaml` file in the root directory with the following variables:
 
 ```
@@ -52,23 +64,28 @@ http://localhost:8000/graphql | GraphQL Explorer
 
 # How to Query
 
-Get a list of all records
-```graphql
-query {
-  records {
-    id
-    data
-    clearance
-  }
-}
-```
+Go to http://localhost:8000/graphql to use the GraphQL explorer.
 
-Get the current user
-```graphql
+Show the current user and list all documents the user has access to.
+
+```
 query {
   currentUser {
     username
-    clearance
+    active
+    roles
+  }
+  documents {
+    id
+    title
+    classification
+    createdAt
+    portions {
+      id
+      text
+      classification
+      createdAt
+    }
   }
 }
 ```
@@ -100,3 +117,18 @@ You can use psql to troubleshoot the database.
 ```
 docker run --rm -it --network gql_default -e "PGSSLMODE=disable" postgres:latest psql -U postgres -h db -p 5432
 ```
+
+# Deprecated Queries
+
+Get a list of all records
+
+```graphql
+query {
+  records {
+    id
+    data
+    clearance
+  }
+}
+```
+
