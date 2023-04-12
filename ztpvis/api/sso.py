@@ -1,3 +1,4 @@
+"""Single Sign-On (SSO) with Keycloak."""
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import RedirectResponse
 
@@ -17,6 +18,7 @@ router = APIRouter()
 
 
 async def load_userinfo(request: Request):
+    """Loads the user info from Keycloak."""
     access_token = request.session.get("access_token")
     if not access_token:
         raise HTTPException(status_code=401, detail="Not authenticated")
