@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Hello!</title>
+  </head>
+  <body>
+    {% if user and user.is_authenticated %}
+      <h1>Hello {{user.email}}!</h1>
+      <p>Here's some info about you:</p>
+      <ul>
+        <li>Username: {{user.username}}</li>
+      </ul>
+
+      <h2> Navigation </h2>
+      <nav>
+        <ul>
+          <li><a href='/graphql'>GraphiQL</a></li>
+          <li><a href='/logout'>Logout</a></li>
+        </ul>
+      </nav>
+    {% else %}
+      <h1>Hello Guest!</h1>
+      <p>Click here to login: <a href='/login'>Login</a></p>
+    {% endif %}
+  </body>
+</html>

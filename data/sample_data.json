@@ -1,0 +1,368 @@
+[
+    {
+        "model": "documents.classification",
+        "pk": 1,
+        "fields": {
+            "name": "UNCLASSIFIED",
+            "created_at": "2023-04-19T00:58:42.983Z",
+            "updated_at": "2023-04-19T00:58:42.983Z"
+        }
+    },
+    {
+        "model": "documents.classification",
+        "pk": 2,
+        "fields": {
+            "name": "CONFIDENTIAL",
+            "created_at": "2023-04-19T00:58:56.947Z",
+            "updated_at": "2023-04-19T00:58:56.948Z"
+        }
+    },
+    {
+        "model": "documents.classification",
+        "pk": 3,
+        "fields": {
+            "name": "SECRET",
+            "created_at": "2023-04-19T00:59:10.949Z",
+            "updated_at": "2023-04-19T00:59:10.949Z"
+        }
+    },
+    {
+        "model": "documents.classification",
+        "pk": 4,
+        "fields": {
+            "name": "TOPSECRET",
+            "created_at": "2023-04-19T00:59:23.924Z",
+            "updated_at": "2023-04-19T00:59:23.924Z"
+        }
+    },
+    {
+        "model": "documents.document",
+        "pk": 1,
+        "fields": {
+            "title": "Operation Plan: Alpha",
+            "classification": 4,
+            "created_at": "2023-04-19T01:12:52.582Z",
+            "updated_at": "2023-04-19T01:12:52.582Z"
+        }
+    },
+    {
+        "model": "documents.document",
+        "pk": 2,
+        "fields": {
+            "title": "Top Secret Briefing",
+            "classification": 4,
+            "created_at": "2023-04-19T01:12:52.624Z",
+            "updated_at": "2023-04-19T01:12:52.624Z"
+        }
+    },
+    {
+        "model": "documents.document",
+        "pk": 3,
+        "fields": {
+            "title": "Naval Intelligence Report",
+            "classification": 3,
+            "created_at": "2023-04-19T01:12:52.657Z",
+            "updated_at": "2023-04-19T01:12:52.657Z"
+        }
+    },
+    {
+        "model": "documents.document",
+        "pk": 4,
+        "fields": {
+            "title": "La La Land Movie Review",
+            "classification": 1,
+            "created_at": "2023-04-19T01:12:52.697Z",
+            "updated_at": "2023-04-19T01:12:52.697Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 1,
+        "fields": {
+            "document": 1,
+            "classification": 4,
+            "content": "Mission Objective",
+            "created_at": "2023-04-19T01:12:52.591Z",
+            "updated_at": "2023-04-19T01:12:52.591Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 2,
+        "fields": {
+            "document": 1,
+            "classification": 3,
+            "content": "Enemy Threat Analysis",
+            "created_at": "2023-04-19T01:12:52.599Z",
+            "updated_at": "2023-04-19T01:12:52.599Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 3,
+        "fields": {
+            "document": 1,
+            "classification": 2,
+            "content": "Logistics and Resource Allocation",
+            "created_at": "2023-04-19T01:12:52.607Z",
+            "updated_at": "2023-04-19T01:12:52.607Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 4,
+        "fields": {
+            "document": 1,
+            "classification": 1,
+            "content": "Communication Protocols",
+            "created_at": "2023-04-19T01:12:52.615Z",
+            "updated_at": "2023-04-19T01:12:52.615Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 5,
+        "fields": {
+            "document": 2,
+            "classification": 4,
+            "content": "Security Threat Assessment",
+            "created_at": "2023-04-19T01:12:52.631Z",
+            "updated_at": "2023-04-19T01:12:52.631Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 6,
+        "fields": {
+            "document": 2,
+            "classification": 4,
+            "content": "National Security Implications",
+            "created_at": "2023-04-19T01:12:52.641Z",
+            "updated_at": "2023-04-19T01:12:52.641Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 7,
+        "fields": {
+            "document": 2,
+            "classification": 4,
+            "content": "Operational Plan Overview",
+            "created_at": "2023-04-19T01:12:52.649Z",
+            "updated_at": "2023-04-19T01:12:52.649Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 8,
+        "fields": {
+            "document": 3,
+            "classification": 3,
+            "content": "Vessel Tracking and Identification",
+            "created_at": "2023-04-19T01:12:52.665Z",
+            "updated_at": "2023-04-19T01:12:52.665Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 9,
+        "fields": {
+            "document": 3,
+            "classification": 2,
+            "content": "Current Naval Deployment Overview",
+            "created_at": "2023-04-19T01:12:52.673Z",
+            "updated_at": "2023-04-19T01:12:52.673Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 10,
+        "fields": {
+            "document": 3,
+            "classification": 2,
+            "content": "Analysis of Enemy Naval Capabilities",
+            "created_at": "2023-04-19T01:12:52.681Z",
+            "updated_at": "2023-04-19T01:12:52.681Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 11,
+        "fields": {
+            "document": 3,
+            "classification": 1,
+            "content": "Mission Statement",
+            "created_at": "2023-04-19T01:12:52.688Z",
+            "updated_at": "2023-04-19T01:12:52.688Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 12,
+        "fields": {
+            "document": 4,
+            "classification": 1,
+            "content": "La La Land is a romantic musical comedy-drama film directed by Damien Chazelle and starring Emma Stone and Ryan Gosling.",
+            "created_at": "2023-04-19T01:12:52.704Z",
+            "updated_at": "2023-04-19T01:12:52.704Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 13,
+        "fields": {
+            "document": 4,
+            "classification": 1,
+            "content": "The movie tells the story of Mia, an aspiring actress, and Sebastian, a jazz pianist, who fall in love while pursuing their dreams in Los Angeles.",
+            "created_at": "2023-04-19T01:12:52.712Z",
+            "updated_at": "2023-04-19T01:12:52.712Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 14,
+        "fields": {
+            "document": 4,
+            "classification": 1,
+            "content": "The movie features beautiful cinematography, catchy songs, and impressive dance numbers that pay tribute to classic Hollywood musicals.",
+            "created_at": "2023-04-19T01:12:52.720Z",
+            "updated_at": "2023-04-19T01:12:52.720Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 15,
+        "fields": {
+            "document": 4,
+            "classification": 1,
+            "content": "Emma Stone and Ryan Gosling deliver strong performances, and their chemistry on-screen is undeniable.",
+            "created_at": "2023-04-19T01:12:52.727Z",
+            "updated_at": "2023-04-19T01:12:52.727Z"
+        }
+    },
+    {
+        "model": "documents.portion",
+        "pk": 16,
+        "fields": {
+            "document": 4,
+            "classification": 1,
+            "content": "La La Land is a charming and entertaining movie that is sure to leave you with a smile on your face.",
+            "created_at": "2023-04-19T01:12:52.735Z",
+            "updated_at": "2023-04-19T01:12:52.735Z"
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$600000$j5kFHBPQWR8ZXYS1N9vJm4$YOKteFn02ztFvQFuMS/NmnhUlEHSTxLk0lO2p2u2VmA=",
+            "last_login": "2023-04-19T01:18:46.789Z",
+            "is_superuser": true,
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "email": "admin@admin.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2023-04-19T00:57:00.706Z",
+            "clearance": 4,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 2,
+        "fields": {
+            "password": "!ohwJA897fSmGgUizERZPEXnKQtGxWcu0PPUPjbT3",
+            "last_login": "2023-04-19T01:13:15.879Z",
+            "is_superuser": false,
+            "username": "ts_user",
+            "first_name": "",
+            "last_name": "",
+            "email": "ts@test.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-19T00:57:45Z",
+            "clearance": 4,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 3,
+        "fields": {
+            "password": "!gVnbz9BfjOSnvjvDUX67nA7SovVIhYuytR8JPvxz",
+            "last_login": "2023-04-19T00:57:52Z",
+            "is_superuser": false,
+            "username": "s_user",
+            "first_name": "",
+            "last_name": "",
+            "email": "s@test.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-19T00:57:52Z",
+            "clearance": 3,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 4,
+        "fields": {
+            "password": "!Yzr43RV5z6etKO3y4gvzwIOVEJ373fzDjGmFRKS5",
+            "last_login": "2023-04-19T00:57:58Z",
+            "is_superuser": false,
+            "username": "c_user",
+            "first_name": "",
+            "last_name": "",
+            "email": "c@test.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-19T00:57:58Z",
+            "clearance": 2,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 5,
+        "fields": {
+            "password": "!LEjJsk2UY64Cw5CwcpeKgVBOLx8O2GVdwrD2Q0I7",
+            "last_login": "2023-04-19T00:58:06Z",
+            "is_superuser": false,
+            "username": "u_user",
+            "first_name": "",
+            "last_name": "",
+            "email": "u@test.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-19T00:58:06Z",
+            "clearance": 1,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 6,
+        "fields": {
+            "password": "!6VyYxzeB2CAsTMcQLs6Kl8W9biwI9gdMWhSJsgmB",
+            "last_login": "2023-04-19T00:58:12.366Z",
+            "is_superuser": false,
+            "username": "anon",
+            "first_name": "",
+            "last_name": "",
+            "email": "anon@test.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-19T00:58:12.329Z",
+            "clearance": null,
+            "groups": [],
+            "user_permissions": []
+        }
+    }
+]

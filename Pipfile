@@ -4,22 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-graphene = "*"
-uvicorn = "*"
-fastapi = "*"
-pydantic = "*"
-opa-python-client = "*"
-strawberry-graphql = {extras = ["fastapi", "debug-server"], version = "*"}
+django = "*"
+strawberry-graphql-django = "*"
+mozilla-django-oidc = "*"
+"backports.zoneinfo" = "*"
 psycopg2-binary = "*"
-python-dotenv = "*"
-starlette = "*"
-python-keycloak = "*"
-itsdangerous = "*"
-jinja2 = "*"
-dynaconf = "*"
 
 [dev-packages]
 black = "*"
+isort = "*"
+pylama = {extras = ["all", "toml"], version = "*"}
 
 [requires]
-python_version = "3.8"
+python_version = ">=3.8"

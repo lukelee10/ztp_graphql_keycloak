@@ -1,134 +1,95 @@
 # Quickstart
 
-Refer to the `Setup > settings.yaml` section of this README then run the following:
-
+```bash
+docker-compose -f docker-compose/docker-compose.yml up -d
+PIPENV_VENV_IN_PROJECT=1 pipenv install --dev --python $(which python)
+pipenv shell
+./manage.py makemigrations documents users
+./manage.py migrate
+./manage.py loaddata data/sample_data.json
+./manage.py collectstatic
+./manage.py runserver
 ```
-make setup
-make
-```
 
-Naviate to http://localhost:8000/
+# Getting Started
 
-# Setup
-Start the containers.
+Start the postgres and keycloak container services:
 
-```
+```bash
 docker-compose -f docker-compose/docker-compose.yml up -d
 ```
 
-Install all dependencies.
+Install all dependencies with pipenv:
 
-```
+```bash
 pip install pipenv
 PIPENV_VENV_IN_PROJECT=1 pipenv install --dev --python $(which python)
 ```
 
-## settings.yaml
-Create a `settings.yaml` file in the root directory with the following variables:
+Activate your virtual environment:
 
-```
-# Keycloak
-keycloak_server_url: http://localhost:8080/auth/
-keycloak_realm: ztp
-keycloak_client_id: ztp-client
-keycloak_client_secret: BJ8BFHBhs90zbwfgKW705QOOxsxAc4lx
-
-# Postgres
-postgres_host: localhost
-postgres_port: 5432
-postgres_database: postgres
-postgres_user: postgres
-postgres_password: postgres
-
-# FastAPI
-fastapi_secret_key: "super-secret-key"
+```bash
+pipenv shell
 ```
 
-Run the fastapi server
+Create and run the migrations:
 
-```
-uvicorn ztpvis.main:app --host 0.0.0.0 --port 8000 --reload
+```bash
+python manage.py makemigrations documents users
+python manage.py migrate
 ```
 
-# Pages
+Create a superuser:
+
+```bash
+python manage.py createsuperuser
+```
+
+Setup static files:
+
+```bash
+python manage.py collectstatic
+```
+
+Run the server:
+
+```bash
+python manage.py runserver
+```
+
+# URLS
 
 Page | Description
 ---|---
-http://localhost:8000/ | Index
-http://localhost:8000/hello | User Info
-http://localhost:8000/docs | FastAPI Swagger UI
+http://localhost:8000/ | Home Page
 http://localhost:8000/login | SSO Login
 http://localhost:8000/logout | SSO Logout
-http://localhost:8000/callback | SSO Callback
-http://localhost:8000/graphql | GraphQL Explorer
+http://localhost:8000/graphql | GraphQL API
+http://localhost:8000/graphql | Django Admin
 
-# How to Query
+# Users
 
-Go to http://localhost:8000/graphql to use the GraphQL explorer.
-
-Show the current user and list all documents the user has access to.
-
-```
-query {
-  currentUser {
-    username
-    active
-    roles
-  }
-  documents {
-    id
-    title
-    classification
-    createdAt
-    portions {
-      id
-      text
-      classification
-      createdAt
-    }
-  }
-}
-```
-
-## Roles
-
-Role | Attributes
----|---
-clearance_top_secret | fouo='true',sap=['sci']
-clearance_secret | fouo='true'
-clearance_confidential | fouo='true'
-clearance_unclassified | fouo='true'
-
-## Users
-
-Username | Password | Role
+Username | Password | Clearance
 ---|---|---
-admin | admin | admin
-ts_user | password | clearance_top_secret
-s_user | password | clearance_secret
-c_user | password | clearance_confidential
-u_user | password | clearance_unclassified
+admin* | admin | TOPSECRET
+ts_user | password | TOPSECRET
+s_user | password | SECRET
+c_user | password | CONFIDENTIAL
+u_user | password | UNCLASSIFIED
 anon | password | None
 
-# Database
+*\*admin user is not in the ztp realm of Keycloak. You can login via /admin*
 
-You can use psql to troubleshoot the database.
+# Loading Sample Data
 
-```
-docker run --rm -it --network gql_default -e "PGSSLMODE=disable" postgres:latest psql -U postgres -h db -p 5432
-```
+To load sample data into the database, run the following command:
 
-# Deprecated Queries
-
-Get a list of all records
-
-```graphql
-query {
-  records {
-    id
-    data
-    clearance
-  }
-}
+```bash
+python manage.py loaddata data/sample_data.json
 ```
 
+To export the data from the database, run the following command:
+
+```bash
+python manage.py dumpdata documents users > data/sample_data.json
+```
