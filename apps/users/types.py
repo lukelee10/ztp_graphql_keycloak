@@ -3,6 +3,7 @@ from typing import List
 import strawberry.django
 from strawberry import auto
 
+from apps.data_tables.types import AccessAttributeType, ClassificationType
 from apps.users import models
 
 
@@ -17,3 +18,5 @@ class User:
     is_active: auto
     date_joined: auto
     last_login: auto
+    classification = ClassificationType
+    access_attributes: List["AccessAttributeType"] = strawberry.django.field()

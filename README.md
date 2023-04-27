@@ -4,7 +4,7 @@
 docker-compose -f docker-compose/docker-compose.yml up -d
 PIPENV_VENV_IN_PROJECT=1 pipenv install --dev --python $(which python)
 pipenv shell
-./manage.py makemigrations documents users
+./manage.py makemigrations data_tables users
 ./manage.py migrate
 ./manage.py loaddata data/sample_data.json
 ./manage.py collectstatic
@@ -35,7 +35,7 @@ pipenv shell
 Create and run the migrations:
 
 ```bash
-python manage.py makemigrations documents users
+python manage.py makemigrations data_tables users
 python manage.py migrate
 ```
 
@@ -91,5 +91,42 @@ python manage.py loaddata data/sample_data.json
 To export the data from the database, run the following command:
 
 ```bash
-python manage.py dumpdata documents users > data/sample_data.json
+python manage.py dumpdata data_tables users > data/sample_data.json
+```
+
+# How to run a query
+
+Running the following query should give you enough information to render a table when pieced together:
+
+```graphql
+query MySearchQuery {
+  search(searchTerm: "") {
+    data
+    classification {
+      name
+    }
+    row {
+      id
+      accessAttributes {
+        name
+      }
+      classification {
+        name
+      }
+    }
+    accessAttributes {
+      name
+    }
+    column {
+      id
+      classification {
+        name
+      }
+      accessAttributes {
+        name
+      }
+      name
+    }
+  }
+}
 ```

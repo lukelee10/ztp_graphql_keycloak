@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from apps.documents.views import graphql_view
+from apps.data_tables.views import graphql_view
 from apps.users import views as user_views
 
 urlpatterns = [

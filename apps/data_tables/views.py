@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from strawberry.django.views import GraphQLView
 
-from apps.documents.schema import schema
+from apps.data_tables.schema import schema
 
 
 @login_required

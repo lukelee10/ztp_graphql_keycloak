@@ -9,6 +9,7 @@ strawberry-graphql-django = "*"
 mozilla-django-oidc = "*"
 "backports.zoneinfo" = "*"
 psycopg2-binary = "*"
+astunparse = "*"
 
 [dev-packages]
 black = "*"
