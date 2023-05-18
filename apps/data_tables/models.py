@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 
 
 class Classification(models.Model):
@@ -56,6 +57,16 @@ class DataCell(models.Model):
 
     class Meta:
         unique_together = ("row", "column")
+
+    def clean(self):
+        super().clean()
+
+        if self.row.table != self.column.table:
+            raise ValidationError("Row and column must belong to the same table.")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Cell ({self.row}, {self.column})"

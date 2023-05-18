@@ -8,7 +8,7 @@ from apps.users import models
 
 
 @strawberry.django.type(models.User)
-class User:
+class UserType:
     id: auto
     username: auto
     first_name: auto
@@ -18,5 +18,5 @@ class User:
     is_active: auto
     date_joined: auto
     last_login: auto
-    classification = ClassificationType
+    clearance: ClassificationType
     access_attributes: List["AccessAttributeType"] = strawberry.django.field()

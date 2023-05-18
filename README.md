@@ -7,7 +7,7 @@ pipenv shell
 ./manage.py makemigrations data_tables users
 ./manage.py migrate
 ./manage.py loaddata data/sample_data.json
-./manage.py collectstatic
+./manage.py collectstatic --no-input
 ./manage.py runserver
 ```
 
@@ -72,6 +72,8 @@ http://localhost:8000/graphql | Django Admin
 Username | Password | Clearance
 ---|---|---
 admin* | admin | TOPSECRET
+sci1_user | password | TOPSECRET SCI1/NTK1
+sci2_user | password | TOPSECRET SCI2/NTK2/NTK4
 ts_user | password | TOPSECRET
 s_user | password | SECRET
 c_user | password | CONFIDENTIAL
@@ -130,3 +132,22 @@ query MySearchQuery {
   }
 }
 ```
+
+# OPA
+policies located at docker-compose/opa/policies get loaded to container
+
+Query for all policies
+
+GET http://localhost:8181/v1/policies
+
+Query for a "policy" under "policy" ID
+
+GET http://localhost:8181/v1/policies/policy
+
+Uploaded a policy under "policy" ID
+
+PUT http://localhost:8181/v1/policies/policy
+
+Query for "allow_login" rule under the "policy" ID returns true if data given meets rule requirements, false if it fails to meet rule, or {} if not found
+
+POST http://localhost:8181/v1/policies/policy/allow_login

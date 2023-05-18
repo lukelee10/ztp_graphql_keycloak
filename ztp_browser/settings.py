@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from ztp_browser.logging_formatters import CustomJsonFormatter
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -123,6 +124,49 @@ USE_I18N = True
 
 USE_TZ = True
 
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": True,
+    "formatters": {
+        "main_formatter": {
+            "()": CustomJsonFormatter,
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "main_formatter",
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": "app.log",
+            "formatter": "main_formatter",
+        },
+        "debug_file": {
+            "class": "logging.FileHandler",
+            "filename": "debug_app.log",
+            "formatter": "main_formatter",
+        },
+    },
+    "loggers": {
+        "info": {
+            "handlers": ["file", "console"],
+            "propagate": True,
+            "level": "INFO",
+        },
+        "main": {
+            "handlers": ["file", "console"],
+            "propagate": True,
+            "level": "INFO",
+        },
+        "critical": {
+            "handlers": ["file", "console"],
+            "propagate": True,
+            "level": "CRITICAL",
+        },
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

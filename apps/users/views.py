@@ -1,10 +1,8 @@
 # views.py
-import requests
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.template import Context, Template
 from mozilla_django_oidc.views import OIDCLogoutView
 
 

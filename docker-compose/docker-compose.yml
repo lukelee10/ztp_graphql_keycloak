@@ -2,6 +2,7 @@ version: '3'
 
 services:
   keycloak:
+    container_name: keycloak
     image: jboss/keycloak:latest
     environment:
       KEYCLOAK_USER: admin
@@ -12,32 +13,30 @@ services:
       - ./keycloak/config:/config
     ports:
       - 8080:8080
-  # podman run --name db -e POSTGRES_PASSWORD=postgres -e PGSSLMODE=disable -d postgres
   db:
+    container_name: postgres
     image: docker.io/postgres:latest
     restart: always
-    # volumes:
-      # - ./postgres/init-record-db.sql:/docker-entrypoint-initdb.d/init-record-db.sql
-      # - ./postgres/tables:/tables
-      # - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
-      # - ./postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
     ports:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: postgres
       PGSSLMODE: disable
       POSTGRES_HOST_AUTH_METHOD: trust
-  # opa:
-  #   image: openpolicyagent/opa:latest
-  #   command:
-  #     - run
-  #     - --server
-  #     - --h2c
-  #     # - --config-file=/opa/config.yaml
-  #     - --log-level=debug
-  #     # - /opa
-  #   volumes:
-  #     # - ./opa:/opa
-  #     - ./opa/policy:/policy
-  #   ports:
-  #     - 8181:8181
+  opa:
+    container_name: opa
+    image: openpolicyagent/opa:latest
+    restart: always
+    command:
+      - run
+      - --server
+      - --h2c
+      - --log-level=debug
+      - /policies
+    environment:
+      - POLICY_PATH=/v1/data/policy
+    volumes:
+      - ./opa/policies:/policies
+      - ./opa/logs:/logs
+    ports:
+      - 8181:8181

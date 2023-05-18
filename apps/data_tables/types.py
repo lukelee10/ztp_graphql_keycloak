@@ -52,3 +52,7 @@ class DataCellType:
     data: auto
     classification: ClassificationType
     access_attributes: List[AccessAttributeType] = strawberry.django.field()
+
+    @strawberry.field
+    def table(self) -> DataTableType:
+        return self.row.table
