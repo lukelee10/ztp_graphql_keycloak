@@ -1,9 +1,24 @@
-# views.py
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.http import HttpRequest, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from mozilla_django_oidc.views import OIDCLogoutView
+from strawberry.django.views import GraphQLView
+
+from apps.data_tables.schema import schema
+
+
+@login_required
+@csrf_exempt
+def graphql_view(request):
+    return GraphQLView.as_view(schema=schema)(request)
+
+
+@login_required
+@csrf_exempt
+def ping(request: HttpRequest):
+    return JsonResponse({"message": request.user.username})
 
 
 def index(request):

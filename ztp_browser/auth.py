@@ -1,7 +1,36 @@
 """Custom authentication backend for Keycloak. When a user first logs in, they will be created in the django."""
+
+from django.contrib.auth.middleware import AuthenticationMiddleware
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
+from mozilla_django_oidc.contrib.drf import OIDCAuthentication
 
 from apps.data_tables.models import AccessAttribute, Classification
+
+# TODO: Maybe add a shortname field to the Classification model?
+CLEARANCE_MAP = {
+    "U": "UNCLASSIFIED",
+    "C": "CONFIDENTIAL",
+    "S": "SECRET",
+    "TS": "TOPSECRET",
+}
+
+
+class OIDCAuthenticationMiddleware(AuthenticationMiddleware):
+    def __init__(self, get_response):
+        self.oidc_auth = OIDCAuthentication()
+        super().__init__(get_response)
+
+    def process_request(self, request):
+        # Call the parent's process_request method
+        super().process_request(request)
+
+        # Perform OpenID Connect authentication
+        auth = self.oidc_auth.authenticate(request)
+        if auth:
+            user, _ = auth[0], auth[1]
+            # Set the authenticated user in the request
+            request.user = user
+            print("OIDC user authenticated: " + user.username)
 
 
 class KeycloakOIDCAuthenticationBackend(OIDCAuthenticationBackend):
@@ -27,19 +56,11 @@ class KeycloakOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         """Sync a user in the django auth database from Keycloak claims."""
         user.username = claims.get("preferred_username")
 
-        # TODO: Maybe add a shortname field to the Classification model?
-        clearance_map = {
-            "U": "UNCLASSIFIED",
-            "C": "CONFIDENTIAL",
-            "S": "SECRET",
-            "TS": "TOPSECRET",
-        }
-
         # Update the user's clearance
         clearance_shortname = claims.get("clearance")
 
         try:
-            clearance = Classification.objects.get(name=clearance_map[clearance_shortname])
+            clearance = Classification.objects.get(name=CLEARANCE_MAP[clearance_shortname])
         except KeyError:
             clearance = Classification.objects.get(name="UNCLASSIFIED")
         user.clearance = clearance
@@ -60,7 +81,7 @@ class KeycloakOIDCAuthenticationBackend(OIDCAuthenticationBackend):
             # Create an attribute model for each ntk
             attr_model = AccessAttribute.objects.get_or_create(name=attribute)
             attr_model_list.append(attr_model[0])
-        
+
         # Update the user's Nationality attributes
         nat_list = claims.get("nationality", [])
         for nat in nat_list:

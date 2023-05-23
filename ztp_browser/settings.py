@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+
 from ztp_browser.logging_formatters import CustomJsonFormatter
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,22 +42,21 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "mozilla_django_oidc",
+    "rest_framework",
+    "corsheaders",
+    "ztp_browser",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "ztp_browser.auth.OIDCAuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
-AUTHENTICATION_BACKENDS = (
-    "ztp_browser.auth.KeycloakOIDCAuthenticationBackend",
-    "django.contrib.auth.backends.ModelBackend",
-)
 
 ROOT_URLCONF = "ztp_browser.urls"
 
@@ -184,13 +184,22 @@ STRAWBERRY_DJANGO = {
     "TYPE_DESCRIPTION_FROM_MODEL_DOCSTRING": True,
 }
 
+AUTHENTICATION_BACKENDS = (
+    "ztp_browser.auth.KeycloakOIDCAuthenticationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+# Cross Origin Resource Sharing
+# WARNING: Do not use CORS_ORIGIN_ALLOW_ALL = True in production
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+
 AUTH_USER_MODEL = "users.User"
 
-LOGIN_URL = "/oidc/authenticate/"
+# SSO
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-
-# SSO
+LOGIN_URL = "/oidc/authenticate/"
 KEYCLOAK_URL = "http://localhost:8080/auth/realms/ztp"
 OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_RP_CLIENT_ID = "ztp-client"
