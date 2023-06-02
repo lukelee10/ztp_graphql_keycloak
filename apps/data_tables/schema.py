@@ -3,13 +3,9 @@ from typing import List
 
 import strawberry.django
 from django.db.models import Count, F, Q
-from apps.data_tables.models import (
-    DataCell,
-    DataColumn,
-    DataRow,
-    DataTable,
-)
-from apps.data_tables.types import DataCellType
+
+from apps.data_tables.models import DataCell, DataColumn, DataRow, DataTable
+from apps.data_tables.types import DataCellType, DataRowType, DataTableType
 from apps.users.types import UserType
 from ztp_browser.utils.ztp_opa_client import OPA
 
@@ -21,6 +17,29 @@ class Query:
     @strawberry.field
     def current_user(self, info) -> UserType:
         return info.context.request.user
+
+    @strawberry.field
+    def get_table(self, info, table_id: int) -> DataTableType:
+        user = info.context.request.user
+
+        # Filter based on user's clearance level and access attributes
+        clearance_level = user.clearance.level if user.clearance else 0
+        user_attributes = user.access_attributes.all()
+
+        accessible_tables = (
+            DataTable.objects.filter(
+                Q(id=table_id),
+                Q(classification__level__lte=clearance_level) | Q(classification__isnull=True),
+            )
+            .annotate(
+                num_required_attributes=Count("access_attributes"),
+                num_user_attributes=Count("access_attributes", filter=Q(access_attributes__in=user_attributes)),
+            )
+            .filter(num_required_attributes=F("num_user_attributes"))
+            .distinct()
+        )
+
+        return accessible_tables.first()
 
     @strawberry.field
     def search(self, info, search_term: str) -> List[DataCellType]:
@@ -157,7 +176,6 @@ class Query:
             )
             return None  # maybe send to queue for human review
 
-
         # row attr verification
         if not (client.verify_attribute_access(user, accessible_rows.values_list("access_attributes", flat=True))):
             log.critical(
@@ -244,7 +262,10 @@ class Query:
             "name": user.username,
             "clearance": user.clearance.name,
             "attributes": list(user_attributes.values_list("name", flat=True)),
-            "cells": [f"CELL(row={cell.row.id},column='{cell.column.name}',table='{cell.row.table.name}')" for cell in search_results],
+            "cells": [
+                f"CELL(row={cell.row.id},column='{cell.column.name}',table='{cell.row.table.name}')"
+                for cell in search_results
+            ],
             "access_granted": True,
         }
         import json

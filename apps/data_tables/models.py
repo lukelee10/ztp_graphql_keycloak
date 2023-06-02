@@ -27,7 +27,7 @@ class DataTable(models.Model):
 
 
 class DataRow(models.Model):
-    table = models.ForeignKey(DataTable, on_delete=models.CASCADE)
+    table = models.ForeignKey(DataTable, on_delete=models.CASCADE, related_name="rows")
     classification = models.ForeignKey(Classification, on_delete=models.PROTECT, blank=True, null=True)
     access_attributes = models.ManyToManyField(AccessAttribute, blank=True)
 
@@ -36,7 +36,7 @@ class DataRow(models.Model):
 
 
 class DataColumn(models.Model):
-    table = models.ForeignKey(DataTable, on_delete=models.CASCADE)
+    table = models.ForeignKey(DataTable, on_delete=models.CASCADE, related_name="columns")
     name = models.CharField(max_length=100)
     classification = models.ForeignKey(Classification, on_delete=models.PROTECT, blank=True, null=True)
     access_attributes = models.ManyToManyField(AccessAttribute, blank=True)
@@ -49,8 +49,8 @@ class DataColumn(models.Model):
 
 
 class DataCell(models.Model):
-    row = models.ForeignKey(DataRow, on_delete=models.CASCADE)
-    column = models.ForeignKey(DataColumn, on_delete=models.CASCADE)
+    row = models.ForeignKey(DataRow, on_delete=models.CASCADE, related_name="cells")
+    column = models.ForeignKey(DataColumn, on_delete=models.CASCADE, related_name="cells")
     data = models.TextField()
     classification = models.ForeignKey(Classification, on_delete=models.PROTECT, blank=True, null=True)
     access_attributes = models.ManyToManyField(AccessAttribute, blank=True)
