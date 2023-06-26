@@ -30,7 +30,6 @@ class OIDCAuthenticationMiddleware(AuthenticationMiddleware):
             user, _ = auth[0], auth[1]
             # Set the authenticated user in the request
             request.user = user
-            print("OIDC user authenticated: " + user.username)
 
 
 class KeycloakOIDCAuthenticationBackend(OIDCAuthenticationBackend):

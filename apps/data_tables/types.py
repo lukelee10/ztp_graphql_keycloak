@@ -104,10 +104,27 @@ class DataColumnType:
     access_attributes: List[AccessAttributeType] = strawberry.django.field()
 
 
+@strawberry.django.type(models.DataContent)
+class DataContentType:
+    id: auto
+    text_data: auto
+    bool_data: auto
+    image_data: auto
+    # binary_data: auto
+    float_data: auto
+    email_data: auto
+    url_data: auto
+    decimal_data: auto
+    int_data: auto
+    date_data: auto
+    dollar_data: auto
+
+
 @strawberry.django.type(models.DataCell)
 class DataCellType:
     id: auto
-    data: auto
+    data: DataContentType = strawberry.django.field()
+    # data: auto
     classification: ClassificationType
     access_attributes: List[AccessAttributeType] = strawberry.django.field()
     row: DataRowType = strawberry.django.field()

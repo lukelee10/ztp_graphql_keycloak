@@ -17,6 +17,7 @@ requests = "==2.28.1"
 urllib3 = "==1.26.15"
 django-cors-headers = "*"
 djangorestframework = "*"
+pillow = "*"
 
 [dev-packages]
 black = "*"

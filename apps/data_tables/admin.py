@@ -12,6 +12,7 @@ from apps.data_tables.models import (
     DataColumn,
     DataRow,
     DataTable,
+    DataContent,
 )
 
 
@@ -134,3 +135,9 @@ class DataCellAdmin(admin.ModelAdmin):
     search_fields = ("data", "row__id", "column__name")
     list_filter = ("row__table", "column__table")
     filter_horizontal = ("access_attributes",)
+
+
+@admin.register(DataContent)
+class TypeDataAdmin(admin.ModelAdmin):
+    list_display = ("id", "text_data", "bool_data", "image_data", "float_data", "email_data", "url_data", "decimal_data", "int_data", "date_data", "dollar_data")
+    search_fields = ("id", "text_data", "bool_data", "image_data", "float_data", "email_data", "url_data", "decimal_data", "int_data", "date_data", "dollar_data",)
