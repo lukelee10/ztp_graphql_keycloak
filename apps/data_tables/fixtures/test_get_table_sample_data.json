@@ -1,0 +1,204 @@
+[
+    {
+      "model": "data_tables.classification",
+      "pk": 1,
+      "fields": {
+        "name": "UNCLASSIFIED",
+        "level": 0
+      }
+    },
+    {
+      "model": "data_tables.classification",
+      "pk": 2,
+      "fields": {
+        "name": "CONFIDENTIAL",
+        "level": 1
+      }
+    },
+    {
+      "model": "data_tables.classification",
+      "pk": 3,
+      "fields": {
+        "name": "SECRET",
+        "level": 2
+      }
+    },
+    {
+      "model": "data_tables.classification",
+      "pk": 4,
+      "fields": {
+        "name": "TOP SECRET",
+        "level": 3
+      }
+    },
+    {
+      "model": "users.user",
+      "pk": 1,
+      "fields": {
+        "username": "u_user",
+        "password": "password",
+        "clearance": 1
+      }
+    },
+    {
+      "model": "users.user",
+      "pk": 2,
+      "fields": {
+        "username": "c_user",
+        "password": "password",
+        "clearance": 2
+      }
+    },
+    {
+      "model": "users.user",
+      "pk": 3,
+      "fields": {
+        "username": "s_user",
+        "password": "password",
+        "clearance": 3
+      }
+    },
+    {
+      "model": "users.user",
+      "pk": 4,
+      "fields": {
+        "username": "ts_user",
+        "password": "password",
+        "clearance": 4
+      }
+    },
+    {
+      "model": "data_tables.accessattribute",
+      "pk": 1,
+      "fields": {
+        "name": "Test_Attribute"
+      }
+    },
+    {
+      "model": "data_tables.accessattribute",
+      "pk": 2,
+      "fields": {
+        "name": "Test_Attribute_2"
+      }
+    },
+    {
+      "model": "users.user",
+      "pk": 5,
+      "fields": {
+        "username": "test_attr1_user",
+        "password": "password",
+        "clearance": 1,
+        "access_attributes": [1]
+      }
+    },
+    {
+      "model": "users.user",
+      "pk": 6,
+      "fields": {
+        "username": "test_attr2_user",
+        "password": "password",
+        "clearance": 1,
+        "access_attributes": [2]
+      }
+    },
+    {
+      "model": "users.user",
+      "pk": 7,
+      "fields": {
+        "username": "test_attr1_2_user",
+        "password": "password",
+        "clearance": 1,
+        "access_attributes": [1, 2]
+      }
+    },
+    {
+      "model": "data_tables.datatable",
+      "pk": 1,
+      "fields": {
+        "name": "Test Table",
+        "classification": 1
+      }
+    },
+    {
+      "model": "data_tables.datarow",
+      "pk": 1,
+      "fields": {
+        "table": 1,
+        "classification": 1
+      }
+    },
+    {
+      "model": "data_tables.datarow",
+      "pk": 2,
+      "fields": {
+        "table": 1,
+        "classification": 1
+      }
+    },
+    {
+      "model": "data_tables.datacolumn",
+      "pk": 1,
+      "fields": {
+        "name": "Column 1",
+        "table": 1,
+        "classification": 1
+      }
+    },
+    {
+      "model": "data_tables.datacolumn",
+      "pk": 2,
+      "fields": {
+        "name": "Column 2",
+        "table": 1,
+        "classification": 1
+      }
+    },
+    {
+      "model": "data_tables.datacontent",
+      "pk": 1,
+      "fields": {
+        "text_data": "Test Data"
+      }
+    },
+    {
+      "model": "data_tables.datacell",
+      "pk": 1,
+      "fields": {
+        "row": 1,
+        "column": 1,
+        "classification": 1,
+        "data": 1
+      }
+    },
+    {
+      "model": "data_tables.datacell",
+      "pk": 2,
+      "fields": {
+        "row": 1,
+        "column": 2,
+        "classification": 1,
+        "data": 1
+      }
+    },
+    {
+      "model": "data_tables.datacell",
+      "pk": 3,
+      "fields": {
+        "row": 2,
+        "column": 1,
+        "classification": 1,
+        "data": 1
+      }
+    },
+    {
+      "model": "data_tables.datacell",
+      "pk": 4,
+      "fields": {
+        "row": 2,
+        "column": 2,
+        "classification": 1,
+        "data": 1
+      }
+    }
+  ]
+  

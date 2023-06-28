@@ -8,6 +8,7 @@ from apps.data_tables.models import DataCell, DataColumn, DataRow, DataTable
 from apps.data_tables.types import DataCellType, DataRowType, DataTableType
 from apps.users.types import UserType
 from ztp_browser.utils.ztp_opa_client import OPA
+from typing import Optional
 
 log = logging.getLogger("main")
 
@@ -19,7 +20,7 @@ class Query:
         return info.context.request.user
 
     @strawberry.field
-    def get_table(self, info, table_id: int) -> DataTableType:
+    def get_table(self, info, table_id: int) -> Optional[DataTableType]:
         user = info.context.request.user
 
         # Filter based on user's clearance level and access attributes
