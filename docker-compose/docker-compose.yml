@@ -3,6 +3,7 @@ version: '3'
 services:
   keycloak:
     container_name: keycloak
+    user: "0:0"
     image: jboss/keycloak:latest
     environment:
       KEYCLOAK_USER: admin
@@ -10,11 +11,12 @@ services:
       DB_VENDOR: h2
       JAVA_OPTS: "-Dkeycloak.import=/config/realm-export.json -Dcom.redhat.fips=false"
     volumes:
-      - ./keycloak/config:/config
+      - ./keycloak/config:/config:z
     ports:
       - 8080:8080
   db:
     container_name: postgres
+    user: "0:0"
     image: docker.io/postgres:latest
     restart: always
     ports:
@@ -25,7 +27,8 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
   opa:
     container_name: opa
-    image: openpolicyagent/opa:latest
+    user: "0:0"
+    image: openpolicyagent/opa:latest-rootless
     restart: always
     command:
       - run
@@ -36,7 +39,7 @@ services:
     environment:
       - POLICY_PATH=/v1/data/policy
     volumes:
-      - ./opa/policies:/policies
-      - ./opa/logs:/logs
+      - ./opa/policies:/policies:z
+      - ./opa/logs:/logs:z
     ports:
       - 8181:8181

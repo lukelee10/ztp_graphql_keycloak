@@ -6,7 +6,7 @@ build-backend = "flit_core.buildapi"
 name = "ztp-browser"
 authors = []
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 dynamic = ["version", "description"]
 dependencies = []
 
