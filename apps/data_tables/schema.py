@@ -1,14 +1,13 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 import strawberry.django
 from django.db.models import Count, F, Q
 
-from apps.data_tables.models import DataCell, DataColumn, DataRow, DataTable
-from apps.data_tables.types import DataCellType, DataRowType, DataTableType
+from apps.data_tables.models import DataContent, DataCell, DataColumn, DataRow, DataTable
+from apps.data_tables.types import DataCellType, DataTableType
 from apps.users.types import UserType
 from ztp_browser.utils.ztp_opa_client import OPA
-from typing import Optional
 
 log = logging.getLogger("main")
 
@@ -20,7 +19,7 @@ class Query:
         return info.context.request.user
 
     @strawberry.field
-    def get_table(self, info, table_id: int) -> Optional[DataTableType]:
+    def get_table(self, info, table_id: int) -> DataTableType:
         user = info.context.request.user
 
         # Filter based on user's clearance level and access attributes
@@ -41,6 +40,73 @@ class Query:
         )
 
         return accessible_tables.first()
+
+    @strawberry.field
+    def search_table(self, info, table_id: int, search_term: str = None) -> List[DataCellType]:
+        """search for term on a given table id"""
+        user = info.context.request.user
+
+        # Filter based on user's clearance level and access attributes
+        clearance_level = user.clearance.level if user.clearance else 0
+        user_attributes = user.access_attributes.all()
+
+        accessible_tables = (
+            DataTable.objects.filter(
+                Q(id=table_id),
+                Q(classification__level__lte=clearance_level) | Q(classification__isnull=True),
+            )
+            .annotate(
+                num_required_attributes=Count("access_attributes"),
+                num_user_attributes=Count("access_attributes", filter=Q(access_attributes__in=user_attributes)),
+            )
+            .filter(num_required_attributes=F("num_user_attributes"))
+            .distinct()
+        )
+
+        accessible_rows = (
+            DataRow.objects.filter(
+                Q(classification__level__lte=clearance_level) | Q(classification__isnull=True),
+                table__in=accessible_tables,
+            )
+            .annotate(
+                num_required_attributes=Count("access_attributes"),
+                num_user_attributes=Count("access_attributes", filter=Q(access_attributes__in=user_attributes)),
+            )
+            .filter(num_required_attributes=F("num_user_attributes"))
+            .distinct()
+        )
+
+        accessible_columns = (
+            DataColumn.objects.filter(
+                Q(classification__level__lte=clearance_level) | Q(classification__isnull=True),
+                table__in=accessible_tables,
+            )
+            .annotate(
+                num_required_attributes=Count("access_attributes"),
+                num_user_attributes=Count("access_attributes", filter=Q(access_attributes__in=user_attributes)),
+            )
+            .filter(num_required_attributes=F("num_user_attributes"))
+            .distinct()
+        )
+
+        content = DataContent.objects.filter(
+            text_data__icontains=search_term,
+        ).distinct('id')
+        search_results = (
+            DataCell.objects.filter(
+                Q(data__in=content),
+                Q(classification__level__lte=clearance_level) | Q(classification__isnull=True),
+                row__in=accessible_rows.distinct(),
+                column__in=accessible_columns,
+            )
+            .annotate(
+                num_required_attributes=Count("access_attributes"),
+                num_user_attributes=Count("access_attributes", filter=Q(access_attributes__in=user_attributes)),
+            )
+            .filter(num_required_attributes=F("num_user_attributes"))
+        ).distinct()
+
+        return search_results.distinct()
 
     @strawberry.field
     def search(self, info, search_term: str) -> List[DataCellType]:

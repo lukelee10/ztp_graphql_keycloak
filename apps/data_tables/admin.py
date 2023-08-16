@@ -139,5 +139,29 @@ class DataCellAdmin(admin.ModelAdmin):
 
 @admin.register(DataContent)
 class TypeDataAdmin(admin.ModelAdmin):
-    list_display = ("id", "text_data", "bool_data", "image_data", "float_data", "email_data", "url_data", "decimal_data", "int_data", "date_data", "dollar_data")
-    search_fields = ("id", "text_data", "bool_data", "image_data", "float_data", "email_data", "url_data", "decimal_data", "int_data", "date_data", "dollar_data",)
+    list_display = (
+        "id",
+        "text_data",
+        "bool_data",
+        "image_data",
+        "float_data",
+        "email_data",
+        "url_data",
+        "decimal_data",
+        "int_data",
+        "date_data",
+        "dollar_data",
+    )
+    search_fields = (
+        "id",
+        "text_data",
+        "bool_data",
+        "image_data",
+        "float_data",
+        "email_data",
+        "url_data",
+        "decimal_data",
+        "int_data",
+        "date_data",
+        "dollar_data",
+    )
