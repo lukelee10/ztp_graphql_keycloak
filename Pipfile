@@ -15,6 +15,7 @@ python-dotenv = "*"
 django-cors-headers = "*"
 djangorestframework = "*"
 pillow = "*"
+django-request-logging = "*"
 
 [dev-packages]
 black = "*"

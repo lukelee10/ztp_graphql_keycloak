@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
-from ztp_browser.logging_formatters import CustomJsonFormatter
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -56,6 +54,7 @@ MIDDLEWARE = [
     "ztp_browser.auth.OIDCAuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "request_logging.middleware.LoggingMiddleware",
 ]
 
 ROOT_URLCONF = "ztp_browser.urls"
@@ -124,46 +123,29 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": True,
+    "disable_existing_loggers": False,
     "formatters": {
-        "main_formatter": {
-            "()": CustomJsonFormatter,
+        "simple": {
+            "format": '{asctime} {levelname} {message}',
+            "style": "{",
         },
     },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
-            "formatter": "main_formatter",
-        },
-        "file": {
-            "class": "logging.FileHandler",
-            "filename": "app.log",
-            "formatter": "main_formatter",
-        },
-        "debug_file": {
-            "class": "logging.FileHandler",
-            "filename": "debug_app.log",
-            "formatter": "main_formatter",
+                "formatter": "simple",
         },
     },
     "loggers": {
-        "info": {
-            "handlers": ["file", "console"],
-            "propagate": True,
-            "level": "INFO",
-        },
-        "main": {
-            "handlers": ["file", "console"],
-            "propagate": True,
-            "level": "INFO",
-        },
-        "critical": {
-            "handlers": ["file", "console"],
-            "propagate": True,
-            "level": "CRITICAL",
+        "django.request": {
+            "handlers": ["console"],
+            "level": "DEBUG", # TODO read env variable to set the level 
+            "propagate": False,
+            "log_headers": True,
+            "log_body": True,
+            "log_response": True,
         },
     },
 }
