@@ -1,14 +1,8 @@
 # Quickstart
 
 ```bash
-docker-compose -f docker-compose/docker-compose.yml up -d
-PIPENV_VENV_IN_PROJECT=1 pipenv install --dev --python $(which python)
-pipenv shell
-./manage.py makemigrations data_tables users
-./manage.py migrate
-./manage.py loaddata data/sample_data.json
-./manage.py collectstatic --no-input
-./manage.py runserver
+docker-compose build
+docker-compose up -d
 ```
 
 # Getting Started
@@ -16,20 +10,20 @@ pipenv shell
 Start the postgres and keycloak container services:
 
 ```bash
-docker-compose -f docker-compose/docker-compose.yml up -d
+docker-compose up -d
 ```
 
-Install all dependencies with pipenv:
+Install all dependencies with poetry:
 
 ```bash
-pip install pipenv
-PIPENV_VENV_IN_PROJECT=1 pipenv install --dev --python $(which python)
+pip install poetry
+poetry install --with=dev
 ```
 
 Activate your virtual environment:
 
 ```bash
-pipenv shell
+poetry shell
 ```
 
 Create and run the migrations:

@@ -1,0 +1,54 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak-ingress
+  annotations:
+    kubernetes.io/ingress.class: istio
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: keycloak.ztp.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ztp-browser-keycloak
+                port:
+                  number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: keycloak-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: {{ .Values.ztp.tls.certName }}
+      hosts:
+        - "keycloak.ztp.dev"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: keycloak-virtual-service
+spec:
+  hosts:
+    - "keycloak.ztp.dev"
+  gateways:
+    - keycloak-gateway
+  http:
+    - route:
+        - destination:
+            host: ztp-browser-keycloak.ztp.svc.cluster.local
+            port:
+              number: 80

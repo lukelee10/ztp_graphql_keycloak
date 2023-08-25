@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-realm-config
+data:
+  ztp-realm-config.yaml: |-
+    {{ .Files.Get "keycloak-config/ztp-realm-config-copy.yaml" | nindent 4 }}

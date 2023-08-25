@@ -1,0 +1,42 @@
+# Base image
+FROM docker.io/library/python:3.11-slim-buster
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Set working directory
+WORKDIR /app
+
+# Create non-root user
+RUN useradd python && \
+    mkdir -p /home/python && \
+    chown python:python -R /home/python /app
+ENV PATH=${PATH}:/home/python/.local/bin
+USER python
+
+# Install Poetry
+RUN pip install poetry --user
+
+# Copy pyproject toml
+COPY --chown=python:python pyproject.toml .
+
+# Install Python dependencies
+RUN poetry install --no-root --without=dev --no-interaction
+
+# Copy the Django project code
+COPY --chown=python:python manage.py .
+COPY --chown=python:python ztp_browser /app/ztp_browser
+COPY --chown=python:python apps /app/apps
+COPY --chown=python:python data /app/data
+
+# Collect static files
+RUN poetry run python manage.py collectstatic --noinput
+
+# Expose the application port
+EXPOSE 80 8000
+
+# Run migrations as part of container initialization
+COPY --chown=python:python docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -1,21 +1,39 @@
 version: '3'
 
 services:
+  backend:
+    user: "0:0"
+    image: artifactory.code.dodiis.mil/artifactory/docker-proj-local/ztpt/ztp-backend:latest
+    build: .
+    environment:
+      DOMAIN_NAME: localhost
+      KEYCLOAK_HOST: http://localhost:8080
+      KEYCLOAK_CLIENT_SECRET: BJ8BFHBhs90zbwfgKW705QOOxsxAc4lx
+    network_mode: host
+    ports:
+      - 8000:8000
+    depends_on:
+      - keycloak
+      - db
+      - opa
+    volumes:
+      - ./apps:/app/apps:z
+      - ./data:/app/data:z
+      - ./ztp_browser:/app/ztp_browser:z
   keycloak:
-    container_name: keycloak
     user: "0:0"
     image: jboss/keycloak:latest
+    network_mode: host
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
       DB_VENDOR: h2
       JAVA_OPTS: "-Dkeycloak.import=/config/realm-export.json -Dcom.redhat.fips=false"
     volumes:
-      - ./keycloak/config:/config:z
+      - ./docker-compose/keycloak/config:/config:z
     ports:
       - 8080:8080
   db:
-    container_name: postgres
     user: "0:0"
     image: docker.io/postgres:latest
     restart: always
@@ -26,7 +44,6 @@ services:
       PGSSLMODE: disable
       POSTGRES_HOST_AUTH_METHOD: trust
   opa:
-    container_name: opa
     user: "0:0"
     image: openpolicyagent/opa:latest-rootless
     restart: always
@@ -39,7 +56,7 @@ services:
     environment:
       - POLICY_PATH=/v1/data/policy
     volumes:
-      - ./opa/policies:/policies:z
-      - ./opa/logs:/logs:z
+      - ./docker-compose/opa/policies:/policies:z
+      - ./docker-compose/opa/logs:/logs:z
     ports:
       - 8181:8181

@@ -10,23 +10,23 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-we_f%c^u3df%8f8pl$phc4yxh(7tt4m)lcz6u8_as0930frgrc"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-we_f%c^u3df%8f8pl$phc4yxh(7tt4m)lcz6u8_as0930frgrc")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
+DOMAIN_NAME = os.getenv("DOMAIN_NAME", "localhost")
 ALLOWED_HOSTS = []
-
+CORS_ALLOWED_ORIGINS = [f"https://{DOMAIN_NAME}"]
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Application definition
 
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -84,11 +85,11 @@ WSGI_APPLICATION = "ztp_browser.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "localhost",
-        "PORT": "",
+        "NAME": os.getenv("DB_NAME", "postgres"),
+        "USER": os.getenv("DB_USER", "postgres"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "postgres"),
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "PORT": os.getenv("DB_PORT", ""),
     }
 }
 
@@ -167,7 +168,7 @@ LOGGING = {
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = "run/static"
+STATIC_ROOT = BASE_DIR / "run" / "static"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -186,19 +187,25 @@ AUTHENTICATION_BACKENDS = (
 
 # Cross Origin Resource Sharing
 # WARNING: Do not use CORS_ORIGIN_ALLOW_ALL = True in production
+CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_ALLOW_ALL = True
 
 AUTH_USER_MODEL = "users.User"
+
+# Keycloak settings
+KEYCLOAK_HOST = os.getenv("KEYCLOAK_HOST", "https://keycloak.{DOMAIN_NAME}")
+KEYCLOAK_REALM = os.getenv("KEYCLOAK_REALM", "ztp")
+KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID", "ztp-client")
+KEYCLOAK_CLIENT_SECRET = os.getenv("KEYCLOAK_CLIENT_SECRET", "")
 
 # SSO
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 LOGIN_URL = "/oidc/authenticate/"
-KEYCLOAK_URL = "http://localhost:8080/auth/realms/ztp"
+KEYCLOAK_URL = f"{KEYCLOAK_HOST}/auth/realms/{KEYCLOAK_REALM}"
 OIDC_RP_SIGN_ALGO = "RS256"
-OIDC_RP_CLIENT_ID = "ztp-client"
-OIDC_RP_CLIENT_SECRET = "BJ8BFHBhs90zbwfgKW705QOOxsxAc4lx"
+OIDC_RP_CLIENT_ID = KEYCLOAK_CLIENT_ID
+OIDC_RP_CLIENT_SECRET = KEYCLOAK_CLIENT_SECRET
 OIDC_RP_SCOPES = "openid profile email"
 OIDC_OP_AUTHORIZATION_ENDPOINT = f"{KEYCLOAK_URL}/protocol/openid-connect/auth"
 OIDC_OP_TOKEN_ENDPOINT = f"{KEYCLOAK_URL}/protocol/openid-connect/token"

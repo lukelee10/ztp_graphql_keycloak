@@ -1,0 +1,238 @@
+realm: ztp
+clients:
+  - clientId: ztp
+    secret: ztp
+    redirectUris:
+      - "https://ztp.dev/*"
+users:
+- username: all_user
+  enabled: true
+  email: all@test.com
+  credentials:
+  - type: password
+    value: password
+  realmRoles:
+  - default-roles-ztp
+  attributes:
+    clearance: TS
+    ntk:
+    - ntk1
+    - ntk2
+    - ntk3
+    - ntk4
+    sci:
+    - sci1
+    - sci2
+    - sci3
+- username: anon
+  enabled: true
+  email: anon@test.com
+  credentials:
+  - type: password
+    value: password
+  realmRoles:
+  - default-roles-ztp
+  attributes: {}
+- username: c_user
+  enabled: true
+  email: c@test.com
+  credentials:
+  - type: password
+    value: password
+  realmRoles:
+  - default-roles-ztp
+  attributes:
+    clearance: C
+- username: ntk1_user
+  enabled: true
+  email: ntk1@test.com
+  credentials:
+  - type: password
+    value: password
+  realmRoles:
+  - default-roles-ztp
+  attributes:
+    clearance: TS
+    ntk:
+    - ntk1
+- username: ntk2_user
+  enabled: true
+  email: ntk2@test.com
+  credentials:
+  - type: password
+    value: password
+  realmRoles:
+  - default-roles-ztp
+  attributes:
+    clearance: TS
+    ntk:
+    - ntk2
+- username: s_user
+  enabled: true
+  email: s@test.com
+  credentials:
+  - type: password
+    value: password
+  realmRoles:
+  - default-roles-ztp
+  attributes:
+    clearance: S
+- username: sci1_user
+  enabled: true
+  email: sci1@test.com
+  credentials:
+  - type: password
+    value: password
+  realmRoles:
+  - default-roles-ztp
+  attributes:
+    clearance: TS
+    sci:
+    - sci1
+- username: sci2_user
+  enabled: true
+  email: sci2@test.com
+  credentials:
+  - type: password
+    value: password
+  realmRoles:
+  - default-roles-ztp
+  attributes:
+    clearance: TS
+    sci:
+    - sci2
+- username: ts_user
+  enabled: true
+  email: ts@test.com
+  credentials:
+  - type: password
+    value: password
+  realmRoles:
+  - default-roles-ztp
+  attributes:
+    clearance: TS
+- username: u_user
+  enabled: true
+  email: u@test.com
+  credentials:
+  - type: password
+    value: password
+  realmRoles:
+  - default-roles-ztp
+  attributes:
+    clearance: U
+clients:
+- id: 6b456b9a-e6e6-431b-89aa-aebfbb3a5691
+  clientId: ztp-client
+  surrogateAuthRequired: false
+  enabled: true
+  alwaysDisplayInConsole: false
+  clientAuthenticatorType: client-secret
+  secret: BJ8BFHBhs90zbwfgKW705QOOxsxAc4lx
+  redirectUris:
+  - "*"
+  webOrigins: []
+  notBefore: 0
+  bearerOnly: false
+  consentRequired: false
+  standardFlowEnabled: true
+  implicitFlowEnabled: false
+  directAccessGrantsEnabled: true
+  serviceAccountsEnabled: false
+  publicClient: false
+  frontchannelLogout: false
+  protocol: openid-connect
+  attributes:
+    id.token.as.detached.signature: 'false'
+    saml.assertion.signature: 'false'
+    saml.force.post.binding: 'false'
+    saml.multivalued.roles: 'false'
+    saml.encrypt: 'false'
+    oauth2.device.authorization.grant.enabled: 'false'
+    backchannel.logout.revoke.offline.tokens: 'false'
+    saml.server.signature: 'false'
+    saml.server.signature.keyinfo.ext: 'false'
+    use.refresh.tokens: 'true'
+    exclude.session.state.from.auth.response: 'false'
+    oidc.ciba.grant.enabled: 'false'
+    saml.artifact.binding: 'false'
+    backchannel.logout.session.required: 'true'
+    client_credentials.use_refresh_token: 'false'
+    saml_force_name_id_format: 'false'
+    require.pushed.authorization.requests: 'false'
+    saml.client.signature: 'false'
+    tls.client.certificate.bound.access.tokens: 'false'
+    saml.authnstatement: 'false'
+    display.on.consent.screen: 'false'
+    saml.onetimeuse.condition: 'false'
+  authenticationFlowBindingOverrides: {}
+  fullScopeAllowed: true
+  nodeReRegistrationTimeout: -1
+  defaultClientScopes:
+  - web-origins
+  - profile
+  - roles
+  - attributes
+  - email
+  optionalClientScopes:
+  - address
+  - phone
+  - offline_access
+  - microprofile-jwt
+- id: c9a4b8ed-193f-4151-bb45-4cc95de2b07a
+  clientId: ztp-frontend-client
+  surrogateAuthRequired: false
+  enabled: true
+  alwaysDisplayInConsole: false
+  clientAuthenticatorType: client-secret
+  redirectUris:
+  - "*"
+  webOrigins:
+  - "*"
+  notBefore: 0
+  bearerOnly: false
+  consentRequired: false
+  standardFlowEnabled: true
+  implicitFlowEnabled: false
+  directAccessGrantsEnabled: true
+  serviceAccountsEnabled: false
+  publicClient: true
+  frontchannelLogout: false
+  protocol: openid-connect
+  attributes:
+    id.token.as.detached.signature: 'false'
+    saml.assertion.signature: 'false'
+    saml.force.post.binding: 'false'
+    saml.multivalued.roles: 'false'
+    saml.encrypt: 'false'
+    oauth2.device.authorization.grant.enabled: 'false'
+    backchannel.logout.revoke.offline.tokens: 'false'
+    saml.server.signature: 'false'
+    saml.server.signature.keyinfo.ext: 'false'
+    use.refresh.tokens: 'true'
+    exclude.session.state.from.auth.response: 'false'
+    oidc.ciba.grant.enabled: 'false'
+    saml.artifact.binding: 'false'
+    backchannel.logout.session.required: 'true'
+    client_credentials.use_refresh_token: 'false'
+    saml_force_name_id_format: 'false'
+    require.pushed.authorization.requests: 'false'
+    saml.client.signature: 'false'
+    tls.client.certificate.bound.access.tokens: 'false'
+    saml.authnstatement: 'false'
+    display.on.consent.screen: 'false'
+    saml.onetimeuse.condition: 'false'
+  authenticationFlowBindingOverrides: {}
+  fullScopeAllowed: true
+  nodeReRegistrationTimeout: -1
+  defaultClientScopes:
+  - web-origins
+  - profile
+  - roles
+  - attributes
+  - email
+  optionalClientScopes:
+  - address
+  - phone
+  - offline_access
+  - microprofile-jwt

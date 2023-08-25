@@ -1,14 +1,36 @@
-[build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
-
-[project]
-name = "ztp-browser"
-authors = []
+[tool.poetry]
+name = "ztp_browser"
+version = "0.1.0"
+description = ""
+authors = ["anon"]
 readme = "README.md"
-requires-python = ">=3.11"
-dynamic = ["version", "description"]
-dependencies = []
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "*"
+strawberry-graphql-django = "*"
+mozilla-django-oidc = "*"
+psycopg2-binary = "*"
+astunparse = "*"
+python-json-logger = "*"
+opa-python-client = "*"
+python-dotenv = "*"
+django-cors-headers = "*"
+django-request-logging = "*"
+djangorestframework = "*"
+pillow = "*"
+gunicorn = "*"
+uvicorn = "*"
+whitenoise = "*"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+isort = "*"
+pylama = {extras = ["all", "toml"], version = "*"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.pylama]
 async = 1

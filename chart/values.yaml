@@ -1,0 +1,36 @@
+backend:
+  replicaCount: 1
+  image:
+    repository: base2/ztp-browser
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    dnsName: ztp.dev
+    port: 8000
+
+ztp:
+  tls:
+    dnsNames:
+      - "ztp.dev"
+      - "*.ztp.dev"
+    certName: ztp-tls
+    issuerName: ztp-issuer
+  keycloak:
+    service:
+      dnsName: keycloak.ztp.dev
+      port: 80
+
+# KEYCLOAK
+# https://github.com/bitnami/charts/blob/main/bitnami/keycloak/values.yaml
+keycloak:
+  auth:
+    adminUser: admin
+    adminPassword: admin
+  keycloakConfigCli:
+    enabled: true
+    existingConfigmap: keycloak-realm-config
+  postgresql:
+    # TODO: figure out why pvc needs to be deleted to reinstall
+    enabled: true
+    auth:
+      postgresqlPassword: postgresql

@@ -1522,7 +1522,7 @@
             "false"
           ],
           "connectionUrl": [
-            "ldap://10.32.0.10"
+            "ldap://139.40.45.99"
           ],
           "syncRegistrations": [
             "false"

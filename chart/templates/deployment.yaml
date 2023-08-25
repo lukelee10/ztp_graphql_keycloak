@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-backend
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-backend
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-backend
+        image: {{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}
+        imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+        env:
+        - name: DOMAIN_NAME
+          value: ztp.dev
+        - name: KEYCLOAK_HOST
+          value: https://keycloak.ztp.dev
+        - name: KEYCLOAK_REALM
+          value: ztp
+        - name: KEYCLOAK_CLIENT_ID
+          value: ztp-client
+        - name: KEYCLOAK_CLIENT_SECRET
+          value: BJ8BFHBhs90zbwfgKW705QOOxsxAc4lx
+        ports:
+        - containerPort: {{ .Values.backend.service.port }}
+        
