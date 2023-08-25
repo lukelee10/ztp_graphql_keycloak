@@ -135,10 +135,14 @@ LOGGING = {
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
-                "formatter": "simple",
+            "formatter": "simple",
         },
     },
     "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "WARNING"
+        },
         "django.request": {
             "handlers": ["console"],
             "level": "DEBUG", # TODO read env variable to set the level 
@@ -146,6 +150,15 @@ LOGGING = {
             "log_headers": True,
             "log_body": True,
             "log_response": True,
+        },
+        "strawberry.execution": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+        "apps.data_tables.schema": {
+            "handlers": ["console"],
+            "level": "INFO"
         },
     },
 }

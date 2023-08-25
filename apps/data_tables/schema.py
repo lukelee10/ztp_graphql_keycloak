@@ -8,9 +8,11 @@ from apps.data_tables.models import DataContent, DataCell, DataColumn, DataRow, 
 from apps.data_tables.types import DataCellType, DataTableType
 from apps.users.types import UserType
 from ztp_browser.utils.ztp_opa_client import OPA
+from graphql import GraphQLError
+from strawberry.extensions import MaskErrors
+from ztp_browser import settings as settings
 
-log = logging.getLogger("main")
-
+log = logging.getLogger(__name__)
 
 @strawberry.type
 class Query:
@@ -39,8 +41,9 @@ class Query:
             .distinct()
         )
 
-        return accessible_tables.first()
+        log.info("User: '{}' with access level: '{}' and attribute(s): '{}' is given access to Table(s): '{}'".format(user, user.clearance, list(user.access_attributes.values_list('name', flat=True)), list(accessible_tables.values_list('id', flat=True))))
 
+        return accessible_tables.first()
     @strawberry.field
     def search_table(self, info, table_id: int, search_term: str = None) -> List[DataCellType]:
         """search for term on a given table id"""
@@ -91,7 +94,7 @@ class Query:
         )
 
         content = DataContent.objects.filter(
-            text_data__icontains=search_term,
+            text_data__icontains=search_term
         ).distinct('id')
         search_results = (
             DataCell.objects.filter(
@@ -107,6 +110,8 @@ class Query:
             .filter(num_required_attributes=F("num_user_attributes"))
         ).distinct()
 
+        log.info("User: '{}' with access level: '{}' and attribute(s): '{}', queried using search term: '{}'. and was given access to Table(s): '{}'".format(user, user.clearance, list(user.access_attributes.values_list('name', flat=True)), list(search_results.values_list('id', flat=True))))
+        
         return search_results.distinct()
 
     @strawberry.field
@@ -166,6 +171,7 @@ class Query:
             )
             .filter(num_required_attributes=F("num_user_attributes"))
         ).distinct()
+        log.info("User: '{}' with access level: '{}' and attribute(s): '{}', queried using search term: '{}'. and was given access to Table(s): '{}'".format(user, user.clearance, list(user.access_attributes.values_list('name', flat=True)), search_term, list(search_results.values_list('id', flat=True))))
         return search_results
 
     @strawberry.field
@@ -292,9 +298,9 @@ class Query:
                 )
             )
             return None
-
         search_results = (
             DataCell.objects.filter(
+                # ASSUMES ALL DATA IS TEXT DATA, COULD CAUSE ISSUES DOWN THE ROAD.
                 Q(data__icontains=search_term),
                 Q(classification__level__lte=clearance_level) | Q(classification__isnull=True),
                 row__in=accessible_rows,
@@ -345,5 +351,23 @@ class Query:
 
         return search_results
 
+def should_mask_error(error: GraphQLError) -> bool:
+    original_error = error.original_error
+    if settings.DEBUG == True:
+        return False
+    else:
+        return True
 
-schema = strawberry.Schema(query=Query)
+from strawberry.types import ExecutionContext
+
+class CustomSchema(strawberry.Schema):
+    def process_errors(
+        self,
+        errors: List[GraphQLError],
+        execution_context: Optional[ExecutionContext] = None,
+    ) -> None:
+        for error in errors:
+            log.error(error)
+    pass
+
+schema = CustomSchema(query=Query, extensions=[MaskErrors(should_mask_error=should_mask_error),],)

@@ -121,7 +121,7 @@ class DataTableTestCase(TestCase):
                         for cell in row['cells']:
                             assert int(cell['classification']['level']) <= user.clearance.level
                 else:
-                    assert result.data['getTable'] == None
+                    assert result.data == None
 
         test_table.classification = test_table_classification
         test_table.save()
@@ -281,7 +281,7 @@ class DataTableTestCase(TestCase):
                             for attr in cell['accessAttributes']:
                                 assert int(attr['id']) in [a.id for a in user.access_attributes.all()]
                 else:
-                    assert result.data['getTable'] == None
+                    assert result.data == None
 
         test_table.access_attributes.set(test_table_attr)
         test_table.save()
