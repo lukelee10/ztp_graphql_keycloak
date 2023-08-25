@@ -79,6 +79,7 @@ class Query:
         accessible_columns = (
             DataColumn.objects.filter(
                 Q(classification__level__lte=clearance_level) | Q(classification__isnull=True),
+                Q(name="record_data"),
                 table__in=accessible_tables,
             )
             .annotate(
