@@ -110,7 +110,14 @@ class Query:
             .filter(num_required_attributes=F("num_user_attributes"))
         ).distinct()
 
-        log.info("User: '{}' with access level: '{}' and attribute(s): '{}', queried using search term: '{}'. and was given access to Table(s): '{}'".format(user, user.clearance, list(user.access_attributes.values_list('name', flat=True)), list(search_results.values_list('id', flat=True))))
+        log.info(
+            "User: '%s' with access level: '%s' and attribute(s): '%s', queried using search term: '%s'. and was given access to Table(s): '%s'",
+            user,
+            user.clearance,
+            list(user.access_attributes.values_list('name', flat=True)),
+            search_term,
+            list(search_results.values_list('id', flat=True)),
+        )
         
         return search_results.distinct()
 
