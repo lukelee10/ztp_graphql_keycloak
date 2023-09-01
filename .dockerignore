@@ -1,0 +1,9 @@
+.devcontainer
+.env
+.venv
+.git*
+__pycache__
+.vscode
+*.log
+docker-compose
+run

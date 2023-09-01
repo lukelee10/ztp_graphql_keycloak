@@ -129,7 +129,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "simple": {
-            "format": '{asctime} {levelname} {message}',
+            "format": "{asctime} {levelname} {message}",
             "style": "{",
         },
     },
@@ -140,13 +140,10 @@ LOGGING = {
         },
     },
     "loggers": {
-        "django": {
-            "handlers": ["console"],
-            "level": "WARNING"
-        },
+        "django": {"handlers": ["console"], "level": "WARNING"},
         "django.request": {
             "handlers": ["console"],
-            "level": "DEBUG", # TODO read env variable to set the level 
+            "level": "DEBUG",  # TODO read env variable to set the level
             "propagate": False,
             "log_headers": True,
             "log_body": True,
@@ -157,10 +154,7 @@ LOGGING = {
             "level": "ERROR",
             "propagate": True,
         },
-        "apps.data_tables.schema": {
-            "handlers": ["console"],
-            "level": "INFO"
-        },
+        "apps.data_tables.schema": {"handlers": ["console"], "level": "INFO"},
     },
 }
 

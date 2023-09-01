@@ -22,6 +22,9 @@ pillow = "*"
 gunicorn = "*"
 uvicorn = "*"
 whitenoise = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+sphinxcontrib-napoleon = "*"
 
 [tool.poetry.group.dev.dependencies]
 black = "*"

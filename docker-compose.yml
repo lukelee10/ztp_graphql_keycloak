@@ -3,7 +3,7 @@ version: '3'
 services:
   backend:
     user: "0:0"
-    image: artifactory.code.dodiis.mil/artifactory/docker-proj-local/ztpt/ztp-backend:latest
+    image: docker.artifactory.code.dodiis.mil/cio4/zerotrustprototype/dev/ztp-backend:latest
     build: .
     environment:
       DOMAIN_NAME: localhost

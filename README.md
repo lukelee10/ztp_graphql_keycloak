@@ -1,3 +1,4 @@
+[![Build Status](https://jenkins.code.dodiis.mil/job/CIO-4/job/ZeroTrustPrototype/job/ztp-graphql-keycloak/badge/icon)](https://jenkins.code.dodiis.mil/job/CIO-4/job/ZeroTrustPrototype/job/ztp-graphql-keycloak/)
 # Quickstart
 
 ```bash
@@ -145,3 +146,13 @@ PUT http://localhost:8181/v1/policies/policy
 Query for "allow_login" rule under the "policy" ID returns true if data given meets rule requirements, false if it fails to meet rule, or {} if not found
 
 POST http://localhost:8181/v1/policies/policy/allow_login
+
+
+# Sphinx Auto Doc Generate
+1. pip install sphinx sphinx-rtd-theme
+1. cd docs
+1. sphinx-quickstart --no-sep --project="ztp-graphql-keycloak" --author="ZTP Development Team" --release="1.0.0" --language="en" .
+1. cp template/conf.py .
+1. sphinx-apidoc -o . .. --ext-autodoc
+1. make html
+1. firefox _build/html/index.html

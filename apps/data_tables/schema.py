@@ -14,10 +14,19 @@ from ztp_browser import settings as settings
 
 log = logging.getLogger(__name__)
 
+
 @strawberry.type
 class Query:
     @strawberry.field
     def current_user(self, info) -> UserType:
+        """Returns current user information
+
+        Args:
+            info (object): context request object
+
+        Returns:
+            UserType: user request object
+        """
         return info.context.request.user
 
     @strawberry.field
@@ -41,9 +50,17 @@ class Query:
             .distinct()
         )
 
-        log.info("User: '{}' with access level: '{}' and attribute(s): '{}' is given access to Table(s): '{}'".format(user, user.clearance, list(user.access_attributes.values_list('name', flat=True)), list(accessible_tables.values_list('id', flat=True))))
+        log.info(
+            "User: '{}' with access level: '{}' and attribute(s): '{}' is given access to Table(s): '{}'".format(
+                user,
+                user.clearance,
+                list(user.access_attributes.values_list("name", flat=True)),
+                list(accessible_tables.values_list("id", flat=True)),
+            )
+        )
 
         return accessible_tables.first()
+
     @strawberry.field
     def search_table(self, info, table_id: int, search_term: str = None) -> List[DataCellType]:
         """search for term on a given table id"""
@@ -93,9 +110,7 @@ class Query:
             .distinct()
         )
 
-        content = DataContent.objects.filter(
-            text_data__icontains=search_term
-        ).distinct('id')
+        content = DataContent.objects.filter(text_data__icontains=search_term).distinct("id")
         search_results = (
             DataCell.objects.filter(
                 Q(data__in=content),
@@ -114,15 +129,24 @@ class Query:
             "User: '%s' with access level: '%s' and attribute(s): '%s', queried using search term: '%s'. and was given access to Table(s): '%s'",
             user,
             user.clearance,
-            list(user.access_attributes.values_list('name', flat=True)),
+            list(user.access_attributes.values_list("name", flat=True)),
             search_term,
-            list(search_results.values_list('id', flat=True)),
+            list(search_results.values_list("id", flat=True)),
         )
-        
+
         return search_results.distinct()
 
     @strawberry.field
     def search(self, info, search_term: str) -> List[DataCellType]:
+        """Returns search results
+
+        Args:
+            info (object): request object
+            search_term (str): search criteria
+
+        Returns:
+            List[DataCellType]: a list of search results
+        """
         user = info.context.request.user
 
         # Filter based on user's clearance level and access attributes
@@ -178,11 +202,29 @@ class Query:
             )
             .filter(num_required_attributes=F("num_user_attributes"))
         ).distinct()
-        log.info("User: '{}' with access level: '{}' and attribute(s): '{}', queried using search term: '{}'. and was given access to Table(s): '{}'".format(user, user.clearance, list(user.access_attributes.values_list('name', flat=True)), search_term, list(search_results.values_list('id', flat=True))))
+        log.info(
+            "User: '{}' with access level: '{}' and attribute(s): '{}', queried using search term: '{}'. and was given access to Table(s): '{}'".format(
+                user,
+                user.clearance,
+                list(user.access_attributes.values_list("name", flat=True)),
+                search_term,
+                list(search_results.values_list("id", flat=True)),
+            )
+        )
         return search_results
 
     @strawberry.field
     def search_opa(self, info, search_term: str) -> List[DataCellType]:
+        """Returns search results and validates user authorization
+        using Open Policy Agent
+
+        Args:
+            info (object): request object
+            search_term (str): search criteria
+
+        Returns:
+            List[DataCellType]: a list of search results
+        """
         user = info.context.request.user
         client = OPA()
 
@@ -358,6 +400,7 @@ class Query:
 
         return search_results
 
+
 def should_mask_error(error: GraphQLError) -> bool:
     original_error = error.original_error
     if settings.DEBUG == True:
@@ -365,7 +408,9 @@ def should_mask_error(error: GraphQLError) -> bool:
     else:
         return True
 
+
 from strawberry.types import ExecutionContext
+
 
 class CustomSchema(strawberry.Schema):
     def process_errors(
@@ -375,6 +420,13 @@ class CustomSchema(strawberry.Schema):
     ) -> None:
         for error in errors:
             log.error(error)
+
     pass
 
-schema = CustomSchema(query=Query, extensions=[MaskErrors(should_mask_error=should_mask_error),],)
+
+schema = CustomSchema(
+    query=Query,
+    extensions=[
+        MaskErrors(should_mask_error=should_mask_error),
+    ],
+)
