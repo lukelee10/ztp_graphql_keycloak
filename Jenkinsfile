@@ -1,6 +1,5 @@
 pipeline {
     agent { label 'CODE' }
-    // triggers { pollSCM('') }
     environment {
         CI = true
         ARTIFACTORY_URL = 'https://artifactory.code.dodiis.mil/artifactory/'
@@ -8,13 +7,14 @@ pipeline {
         SONAR_URL = 'https://sonarqube.code.dodiis.mil/'
         SONAR_PROJECT_KEY = 'ztp-graphql-keycloak'
         SONAR_API_KEY = credentials('sonar-ztp-global-key')
-        // DOCKER_KEY = credentials('art-svc-cio4-zerotrustprototype-dev-dockercfg')
         DOCKER_USER = 'd041900'
         DOCKER_KEY = credentials('artifactory_jenkins_ci_token_fjimenez')
         DOCKER_URL ='docker.artifactory.code.dodiis.mil'
         DEV_IMAGE = '${DOCKER_URL}/cio4/zerotrustprototype/dev/ztp-backend:latest'
         PROD_IMAGE = '${DOCKER_URL}/cio4/zerotrustprototype/prod/ztp-backend:latest'
         DEV_CONT_NAME = 'ztp_backend'
+        SONAR_IMAGE = "${DOCKER_URL}/cio4/zerotrustprototype/common/ztp-sonar-scanner:4.5.0"
+        SONAR_CONTAINER = 'ztp_sonarscanner'
     }
     stages {
         stage('Setup') {
@@ -45,12 +45,17 @@ pipeline {
                 }
             }
         }
-        // TODO
-        // stage('Sonarqube Artifacts') {
-        //     steps {
-        //         archiveArtifacts(artifacts: 'sonarqube*.log', onlyIfSuccessful: false)
-        //     }
-        // }
+        stage('Sonarqube Scan') {
+            steps {
+                script {
+                    //use the built image to run unit test
+                    def sonar_image = docker.image("${SONAR_IMAGE}")
+                    sonar_image.inside {
+                        sonarScan()
+                   }
+                }
+            }
+        }
         stage('Create Artifacts') {
             when {
                 branch 'main'
@@ -83,7 +88,9 @@ pipeline {
         always {
             sh """
             docker stop ${DEV_CONT_NAME} || true && docker rm ${DEV_CONT_NAME} || true && docker rmi ${DEV_IMAGE} || true
+            docker stop ${SONAR_CONTAINER} || true && docker rm ${SONAR_CONTAINER} || true && docker rmi ${SONAR_IMAGE} || true
             docker rmi ${PROD_IMAGE} || true
+            docker rmi ${SONAR_IMAGE} || true
             docker logout ${DOCKER_URL}
             """
         }
@@ -157,15 +164,17 @@ def prodBuildPublish() {
 def sonarScan() {
     sh ''' 
     sonar-scanner \
-        -Dsonar.host.url=${SONAR_URL} \
-        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-        -Dsonar.login=${SONAR_API_KEY} \
-        -Dsonar.sources=icebreaker/ \
-        -Dsonar.python.coverage.reportPaths=${REPORT_COVERAGE} \
-        -Dsonar.exclusions=ztp_graphql_keycloak/alembic/**,ztp_graphql_keycloak/app/static/** \
-        | tee sonarqube-${CURRENT_TIMESTAMP}.log
-    sleep 15
-    export SONAR_TASK_ID=$(grep'report processing'sonarqube-${CURRENT_TIMESTAMP}.log | cut-f2 -d=)
-    dime-parse sonarqube -k ${SONAR_API_KEY} -t ${SONAR_TASK_ID}
+    -Dsonar.host.url=${SONAR_URL} \
+    -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+    -Dsonar.login=${SONAR_API_KEY} \
+    -Dsonar.projectName=${SONAR_PROJECT_KEY} \
+    -Dsonar.language=py \
+    -Dsonar.python.version=3.11 \
+    -Dsonar.exclusions="**/docs/_build/**/*","**.yaml" \
+    -Dsonar.sourceEncoding=UTF-8 \
+    -Dsonar.python.xunit.reportPath=nosetests.xml \
+    -Dsonar.python.coverage.reportPaths=coverage.xml \
+    | tee sonarqube-${CURRENT_TIMESTAMP}.log
     '''
+    archiveArtifacts artifacts: 'sonarqube*.log', onlyIfSuccessful: false
 }
