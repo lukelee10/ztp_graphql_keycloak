@@ -22,6 +22,7 @@ services:
       - ./ztp_browser:/app/ztp_browser:z
   keycloak:
     user: "0:0"
+    container_name: jboss_keycloak
     image: jboss/keycloak:latest
     network_mode: host
     environment:
@@ -31,6 +32,7 @@ services:
       JAVA_OPTS: "-Dkeycloak.import=/config/realm-export.json -Dcom.redhat.fips=false"
     volumes:
       - ./docker-compose/keycloak/config:/config:z
+      - ./docker-compose/keycloak/themes/base2:/opt/jboss/keycloak/themes/base2
     ports:
       - 8080:8080
   db:
