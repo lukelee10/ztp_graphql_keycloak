@@ -1,5 +1,6 @@
 pipeline {
     agent { label 'CODE' }
+    options { gitlabBuilds(builds:["Setup", "Build", "Test", "Lint", "Scan", "Artifacts", "Publish"])}
     environment {
         CI = true
         ARTIFACTORY_URL = 'https://artifactory.code.dodiis.mil/artifactory/'
@@ -19,68 +20,90 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-                catchError(buildResult: 'Success', stageResult: 'FAILURE') {
-                    setup()
+                gitlabCommitStatus("Setup"){
+                    catchError(stageResult: 'FAILURE') {
+                        setup()
+                    }
                 }
             }
         }
         stage('Build Dev Image') {
             steps {
-                catchError(buildResult: 'Success', stageResult: 'FAILURE') {
-                    imageBuildDevImage()
+                gitlabCommitStatus("Build"){
+                    catchError(stageResult: 'FAILURE') {
+                        imageBuildDevImage()
+                    }
                 }
             }
         }
         stage('Test Dev Image') {
             steps {
-                catchError(buildResult: 'Success', stageResult: 'FAILURE') {
-                    runTestContainer()
+                gitlabCommitStatus("Test"){
+                    catchError(stageResult: 'FAILURE') {
+                        runTestContainer()
+                    }
                 }
             }
         }
         stage('Linter') {
             steps {
-                catchError(buildResult: 'Success', stageResult: 'FAILURE') {
-                    blackLinter()
+                gitlabCommitStatus("Lint"){
+                    catchError(stageResult: 'FAILURE') {
+                        blackLinter()
+                    }
                 }
             }
         }
         stage('Sonarqube Scan') {
             steps {
-                script {
-                    //use the built image to run unit test
-                    def sonar_image = docker.image("${SONAR_IMAGE}")
-                    sonar_image.inside {
-                        sonarScan()
-                   }
+                gitlabCommitStatus("Scan"){
+                    script {
+                        //use the built image to run unit test
+                        def sonar_image = docker.image("${SONAR_IMAGE}")
+                        sonar_image.inside {
+                            sonarScan()
+                        }   
+                    }
                 }
             }
         }
-        stage('Create Artifacts') {
-            when {
-                branch 'main'
-            }
-            steps {
-                catchError(buildResult: 'Success', stageResult: 'FAILURE') {
-                    createArtifacts()
+        stage('Artifacts') {
+            parallel {
+                stage('Skip'){
+                    when {
+                        not{
+                            branch 'main'
+                        }
+                    }
+                    steps{
+                        updateGitlabCommitStatus name: 'Artifacts', state: 'success'
+                        updateGitlabCommitStatus name: 'Publish', state: 'success'
+                    }
                 }
-            }
-        }
-        stage('Build and Publish Prod image') {
-            when {
-                branch 'main'
-            }
-            steps {
-                catchError(buildResult: 'Success', stageResult: 'FAILURE') {
-                    prodBuildPublish()
+                stage('Create Artifacts') {
+                    when{
+                        branch 'main'
+                    }
+                    steps {
+                        gitlabCommitStatus("Artifacts"){
+                            catchError(stageResult: 'FAILURE') {
+                                createArtifacts()
+                            }
+                        }
+                    }
                 }
-            }
-        }
-        stage('gitlab') {
-            steps {
-                echo 'Notify Gitlab'
-                updateGitlabCommitStatus name: 'build', state: 'pending'
-                updateGitlabCommitStatus name: 'build', state: 'success'
+                stage('Publish') {
+                    when{
+                        branch 'main'
+                    }
+                    steps {
+                        gitlabCommitStatus("Publish"){
+                            catchError(stageResult: 'FAILURE') {
+                                prodBuildPublish()
+                            }
+                        }
+                    }
+                }
             }
         }
     }
